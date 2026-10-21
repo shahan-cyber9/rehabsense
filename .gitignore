@@ -1,0 +1,19 @@
+# Virtual environment
+.venv/
+venv/
+
+# Python cache
+__pycache__/
+*.pyc
+*.pyo
+
+# Secrets and local config
+.env
+
+# OS / editor
+.DS_Store
+.vscode/
+
+# Local session data — never commit personal/health data
+data/*.csv
+data/*.db
