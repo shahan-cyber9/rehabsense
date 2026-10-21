@@ -1,6 +1,7 @@
 """Tests for src.geometry.
 
-Day 4 will add angle tests.
+Phase 3 (Vision & Geometry) will add angle tests.
 """
 
-# TODO (Day 4): add geometry tests.
+# TODO (P3): add geometry tests.
+

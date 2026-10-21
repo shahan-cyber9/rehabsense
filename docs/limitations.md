@@ -1,3 +1,4 @@
 # Limitations
 
-TODO (Day 25): document technical, clinical, and ethical limitations.
+TODO (P6): document technical, clinical, and ethical limitations.
+

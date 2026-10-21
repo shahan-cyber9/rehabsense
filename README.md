@@ -11,7 +11,8 @@ geometry to estimate movement metrics such as repetitions, knee angle, angular
 excursion, and session progress.
 
 ## Current status
-Day 1: repository scaffold and environment setup. Core pipeline under development.
+Phase 1 (Foundation) complete: repository scaffold and environment setup.
+Phase 2 (Camera Capture) in progress.
 
 ## Tech stack
 - Python 3.14 (Windows)

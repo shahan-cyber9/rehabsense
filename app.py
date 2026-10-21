@@ -1,6 +1,7 @@
 """RehabSense Streamlit entry point.
 
-Day 15 will add the dashboard shell.
+Phase 5 (Dashboard & Analytics) will implement the dashboard shell.
 """
 
-# TODO (Day 15): build the Streamlit dashboard shell.
+# TODO (P5): build the Streamlit dashboard shell.
+

@@ -1,6 +1,7 @@
 """Exercise state machine.
 
-Day 8 will implement SquatAnalyzer.
+Phase 4 (Exercise Analysis) will implement SquatAnalyzer.
 """
 
-# TODO (Day 8): implement SquatAnalyzer.
+# TODO (P4): implement SquatAnalyzer.
+
