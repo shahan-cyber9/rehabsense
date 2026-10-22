@@ -17,3 +17,5 @@ __pycache__/
 # Local session data — never commit personal/health data
 data/*.csv
 data/*.db
+# MediaPipe model files (downloaded, not committed)
+models/*.task

@@ -1,4 +1,5 @@
-"""Phase 2 webcam smoke test.
+"""
+Phase 2 webcam smoke test.
 
 Opens the default camera, shows a live feed, and closes cleanly on 'q'.
 No MediaPipe, no pose detection — only proves that OpenCV can access a camera.
