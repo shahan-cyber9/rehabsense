@@ -1,7 +1,16 @@
-"""Tests for src.geometry.
+"""Tests for src.geometry."""
 
-Phase 3 (Vision & Geometry) will add angle tests.
-"""
+import pytest
+from src.geometry import calculate_angle
 
-# TODO (P3): add geometry tests.
 
+def test_right_angle():
+    assert calculate_angle((1, 0), (0, 0), (0, 1)) == pytest.approx(90.0)
+
+
+def test_straight_angle():
+    assert calculate_angle((-1, 0), (0, 0), (1, 0)) == pytest.approx(180.0)
+
+
+def test_zero_length_vector():
+    assert calculate_angle((0, 0), (0, 0), (0, 1)) is None
