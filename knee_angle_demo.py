@@ -1,9 +1,10 @@
-"""Live knee angle demonstration with rep counting."""
+"""Live knee angle demonstration with rep counting and session saving."""
 
 import cv2
 from src.pose_detector import PoseDetector
 from src.geometry import calculate_angle
 from src.exercise_analyzer import SquatAnalyzer
+from src.session_store import save_session
 
 
 def draw_hud(frame, text, position):
@@ -28,8 +29,6 @@ def main():
 
     print("System ready. Stand side-on so I can see your knee.")
     detector = PoseDetector()
-    
-    # Initialize the analyzer
     analyzer = SquatAnalyzer()
 
     while True:
@@ -43,7 +42,6 @@ def main():
             landmarks = result.pose_landmarks[0]
             h, w, _ = frame.shape
 
-            # Left Leg
             l_hip = (landmarks[23].x, landmarks[23].y)
             l_knee = (landmarks[25].x, landmarks[25].y)
             l_ankle = (landmarks[27].x, landmarks[27].y)
@@ -51,14 +49,13 @@ def main():
 
             if l_angle is not None:
                 analyzer.update(l_angle)
+                
                 summary = analyzer.get_summary()
                 
-             # The UI
                 draw_hud(frame, f"REPS: {summary['reps']}", (30, 60))
                 draw_hud(frame, f"STATE: {analyzer.stage.upper()}", (30, 120))
                 draw_hud(frame, f"ANGLE: {int(l_angle)} DEG", (30, 180))
                 
-            # Right knee angle for reference
                 r_hip = (landmarks[24].x, landmarks[24].y)
                 r_knee = (landmarks[26].x, landmarks[26].y)
                 r_ankle = (landmarks[28].x, landmarks[28].y)
@@ -72,15 +69,28 @@ def main():
         if cv2.waitKey(1) & 0xFF == ord("q"):
             break
 
-    
+    cap.release()
+    cv2.destroyAllWindows()
+
     print("\n--- SESSION SUMMARY ---")
     final_stats = analyzer.get_summary()
     for key, value in final_stats.items():
         print(f"{key.upper()}: {value}")
     print("-----------------------")
 
-    cap.release()
-    cv2.destroyAllWindows()
+# Save only if at least 1 rep was performed
+    if final_stats["reps"] > 0:
+        session_record = {
+            "exercise": "squat",
+            "reps": final_stats["reps"],
+            "min_angle": final_stats["min_angle"],
+            "max_angle": final_stats["max_angle"],
+            "angular_excursion": final_stats["rom"]
+        }
+        save_session(session_record)
+        print("Session saved successfully to data/sessions.csv")
+    else:
+        print("No reps performed. Session not saved.")
 
 
 if __name__ == "__main__":

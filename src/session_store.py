@@ -1,7 +1,19 @@
-"""Session persistence.
+"""Session persistence for saving metrics to local storage."""
 
-Phase 4 (Exercise Analysis) will implement save_session.
-"""
+import pandas as pd
+from datetime import datetime
+from pathlib import Path
 
-# TODO (P4): implement save_session.
 
+def save_session(record, path="data/sessions.csv"):
+    """Saves a dictionary of session metrics to a CSV file."""
+    file_path = Path(path)
+    file_path.parent.mkdir(parents=True, exist_ok=True)
+
+    record["timestamp"] = datetime.now().isoformat(timespec="seconds")
+    df = pd.DataFrame([record])
+
+    if file_path.exists():
+        df.to_csv(file_path, mode="a", header=False, index=False)
+    else:
+        df.to_csv(file_path, index=False)
