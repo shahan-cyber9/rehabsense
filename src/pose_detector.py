@@ -19,6 +19,16 @@ class PoseDetector:
         
         self.landmarker = PoseLandmarker.create_from_options(options)
         self.timestamp_ms = 0
+        
+        self.pose_connections = [
+            (11, 12),                               # Shoulders
+            (11, 23), (12, 24),                     # Torso sides
+            (23, 24),                               # Hips
+            (23, 25), (25, 27), (27, 31),           # Left leg
+            (24, 26), (26, 28), (28, 32)            # Right leg
+        ]
+        
+        self.joints_to_draw = [11, 12, 23, 24, 25, 26, 27, 28, 31, 32]
 
     def process(self, frame):
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -33,17 +43,14 @@ class PoseDetector:
             h, w, _ = frame.shape
             landmarks = result.pose_landmarks[0]
             
-            joints = [23, 24, 25, 26, 27, 28]
-            for idx in joints:
+            for connection in self.pose_connections:
+                self._draw_line(frame, landmarks, connection[0], connection[1], w, h)
+            
+            for idx in self.joints_to_draw:
                 lm = landmarks[idx]
                 cx, cy = int(lm.x * w), int(lm.y * h)
                 cv2.circle(frame, (cx, cy), 6, (0, 255, 0), -1)
                 
-            self._draw_line(frame, landmarks, 23, 25, w, h)
-            self._draw_line(frame, landmarks, 25, 27, w, h)
-            self._draw_line(frame, landmarks, 24, 26, w, h)
-            self._draw_line(frame, landmarks, 26, 28, w, h)
-            
         return frame
 
     def _draw_line(self, frame, landmarks, idx1, idx2, w, h):
@@ -51,4 +58,4 @@ class PoseDetector:
         lm2 = landmarks[idx2]
         x1, y1 = int(lm1.x * w), int(lm1.y * h)
         x2, y2 = int(lm2.x * w), int(lm2.y * h)
-        cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 0), 2)
+        cv2.line(frame, (x1, y1), (x2, y2), (255, 0, 0), 3)
