@@ -59,11 +59,17 @@ st.markdown(
 )
 
 DATA_PATH = Path(__file__).parent / "data" / "sessions.csv"
+SAMPLE_PATH = Path(__file__).parent / "data" / "sample_sessions.csv"
 
+# If the real data doesn't exist, fall back to the sample data
 if not DATA_PATH.exists():
-    st.markdown('<div class="header-title">RehabSense</div>', unsafe_allow_html=True)
-    st.info("No session data found. Complete a workout to generate metrics.")
-    st.stop()
+    if SAMPLE_PATH.exists():
+        DATA_PATH = SAMPLE_PATH
+        st.info("Showing demo data. Run the local Python script to generate your own metrics.")
+    else:
+        st.markdown('<div class="header-title">RehabSense</div>', unsafe_allow_html=True)
+        st.info("No session data found. Complete a workout to generate metrics.")
+        st.stop()
 
 all_sessions = pd.read_csv(DATA_PATH, parse_dates=["timestamp"]).sort_values("timestamp")
 
