@@ -1,4 +1,5 @@
 # RehabSense
+🔗 **[Try the Live Clinical Dashboard Here](https://rehabsense.streamlit.app/)**
 
 A camera-based physiotherapy exercise monitoring and recovery-trend prototype that uses a standard webcam to quantify rehabilitation movements.
 
@@ -14,6 +15,11 @@ RehabSense uses an ordinary webcam to estimate pose landmarks during selected kn
 - **State Machine Rep Counting:** Accurately counts reps with temporal smoothing to reduce AI jitter.
 - **Clinical Dashboard:** Streamlit-based UI to track range of motion (ROM) over time.
 - **Data Persistence:** Saves session metrics locally to a CSV.
+
+## Usage Model: Local Tracking vs. Cloud Dashboard
+RehabSense is designed as a two-part system:
+1. **Local Tracking (Patient):** The actual video processing (`knee_angle_demo.py`, `bicep_curl_demo.py`) requires direct access to the user's hardware (webcam). This runs locally on the patient's machine using OpenCV and saves health data locally to `sessions.csv` to maintain privacy.
+2. **Cloud Dashboard (Clinician):** The Streamlit app is deployed to the cloud for remote monitoring. Because web browsers and cloud servers cannot directly access a user's local webcam, the live cloud deployment uses a `sample_sessions.csv` fallback so reviewers can preview the clinical UI and charts without running Python locally.
 
 ## Technical Challenges & Engineering Solutions
 During development, several computer vision and biomechanical edge cases were identified and solved:
