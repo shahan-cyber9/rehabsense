@@ -1,36 +1,42 @@
 # RehabSense
 
-Camera-based physiotherapy exercise monitoring and recovery-trend prototype.
+A Camera-based physiotherapy exercise monitoring and recovery-trend prototype.
 
 ## Problem
-Home rehabilitation exercises are difficult to monitor objectively between supervised sessions.
+Home rehabilitation exercises are difficult to monitor objectively between supervised sessions. Patients often perform exercises with poor form or incorrect volume, and clinicians lack quantitative data on adherence and progress.
 
-## Proposed solution
-RehabSense uses pose landmarks from an ordinary webcam and transparent joint-angle
-geometry to estimate movement metrics such as repetitions, knee angle, angular
-excursion, and session progress.
+## Proposed Solution
+RehabSense uses an ordinary webcam to estimate pose landmarks during selected knee and arm rehabilitation exercises. It converts body landmarks into interpretable joint-angle metrics, counts repetitions using a state machine, and visualizes longitudinal recovery progress. 
 
-## Current status
-Phase 1 (Foundation) complete: repository scaffold and environment setup.
-Phase 2 (Camera Capture) in progress.
+## Key Features
+- **Real-time Pose Estimation:** Uses MediaPipe Tasks API to track body landmarks.
+- **Biomechanical Posture Validation:** Rejects invalid movements and occluded limbs.
+- **State Machine Rep Counting:** Accurately counts reps with temporal smoothing to reduce AI jitter.
+- **Clinical Dashboard:** Streamlit-based UI to track range of motion (ROM) over time.
+- **Data Persistence:** Saves session metrics locally to a CSV.
 
-## Tech stack
-- Python 3.14 (Windows)
-- OpenCV via `opencv-contrib-python` 5.x (provides `cv2`)
-- MediaPipe 1.1.x (pose landmarks)
-- NumPy, Pandas
-- Streamlit, Plotly
-- pytest, Git/GitHub
+## Tech Stack
+Python 3.14, OpenCV, MediaPipe, Pandas, Streamlit, Plotly, pytest.
 
-## Environment notes
-- MediaPipe 1.1.x is the version pinned in `requirements.txt`. If the legacy
-  `mp.solutions.pose` interface is unavailable, `src/pose_detector.py` will use
-  the MediaPipe Tasks `PoseLandmarker` API instead — the downstream geometry
-  and exercise logic are unaffected.
-- `opencv-contrib-python` is the `cv2` provider. Do **not** also install
-  `opencv-python` in the same environment; the two packages conflict.
+## How to Run Locally
+1. Clone the repository:
+   git clone https://github.com/shahan-cyber9/rehabsense.git
+   cd rehabsense
+2. Create and activate a virtual environment:
+   python -m venv .venv
+   .\.venv\Scripts\activate
+3. Install dependencies:
+   pip install -r requirements.txt
+4. Download the MediaPipe model (`pose_landmarker_lite.task`) and place it in a `models/` folder.
+5. Run the app:
+   streamlit run app.py
 
-## Safety disclaimer
-This is an engineering/research prototype only. It is not a diagnostic medical
-device and must not be used for diagnosis, treatment decisions, or assessment of
-rehabilitation readiness.
+## Visuals
+### Live Pose Tracking
+![Pose Demo](assets/screenshots/pose_demo.png)
+
+### Clinical Dashboard
+![Dashboard](assets/screenshots/dashboard.png)
+
+## Safety Disclaimer
+This is an engineering/research prototype only. It is not a diagnostic medical device and must not be used for diagnosis, treatment decisions, or assessment of rehabilitation readiness.
