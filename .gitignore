@@ -15,7 +15,7 @@ __pycache__/
 .vscode/
 
 # Local session data — never commit personal/health data
-data/*.csv
+data/sessions.csv
 data/*.db
 # MediaPipe model files (downloaded, not committed)
 models/*.task
