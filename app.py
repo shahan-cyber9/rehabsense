@@ -60,21 +60,17 @@ st.markdown(
 
 DATA_PATH = Path(__file__).parent / "data" / "sessions.csv"
 
-st.markdown('<div class="header-title">RehabSense</div>', unsafe_allow_html=True)
-st.markdown('<div class="header-subtitle">Clinical Monitoring Dashboard</div>', unsafe_allow_html=True)
-
 if not DATA_PATH.exists():
+    st.markdown('<div class="header-title">RehabSense</div>', unsafe_allow_html=True)
     st.info("No session data found. Complete a workout to generate metrics.")
     st.stop()
 
-sessions = pd.read_csv(DATA_PATH, parse_dates=["timestamp"]).sort_values("timestamp")
+all_sessions = pd.read_csv(DATA_PATH, parse_dates=["timestamp"]).sort_values("timestamp")
 
-if sessions.empty:
+if all_sessions.empty:
+    st.markdown('<div class="header-title">RehabSense</div>', unsafe_allow_html=True)
     st.info("The session log is empty. Complete a workout to generate metrics.")
     st.stop()
-
-total_reps = sessions["reps"].sum()
-latest_session = sessions.iloc[-1]
 
 with st.sidebar:
     st.header("System Overview")
@@ -83,10 +79,24 @@ with st.sidebar:
         "Engineering prototype only. Not a diagnostic device or a substitute for professional medical care."
     )
     st.divider()
-    st.metric("All-Time Repetitions", int(total_reps))
+    
+    exercise_options = all_sessions["exercise"].unique()
+    selected_exercise = st.selectbox("Select Exercise", exercise_options)
+    
+    filtered_sessions = all_sessions[all_sessions["exercise"] == selected_exercise]
+    
+    if not filtered_sessions.empty:
+        total_reps = filtered_sessions["reps"].sum()
+        st.metric("All-Time Repetitions", int(total_reps))
+        
     st.divider()
     if st.button("Refresh Data"):
         st.rerun()
+
+st.markdown('<div class="header-title">RehabSense</div>', unsafe_allow_html=True)
+st.markdown(f'<div class="header-subtitle">Clinical Monitoring Dashboard - {selected_exercise.replace("_", " ").title()}</div>', unsafe_allow_html=True)
+
+latest_session = filtered_sessions.iloc[-1]
 
 st.divider()
 
@@ -99,7 +109,7 @@ st.markdown(
             <div class="metric-value">{int(latest_session['reps'])}</div>
         </div>
         <div class="metric-box">
-            <div class="metric-label">Min Knee Angle</div>
+            <div class="metric-label">Min Angle</div>
             <div class="metric-value">{latest_session['min_angle']:.1f}&deg;</div>
         </div>
         <div class="metric-box">
@@ -115,11 +125,11 @@ st.divider()
 
 st.subheader("Recovery Trend")
 
-if len(sessions) < 2:
+if len(filtered_sessions) < 2:
     st.info("Complete at least two sessions to view a longitudinal progress trend.")
 else:
     excursion_figure = px.line(
-        sessions,
+        filtered_sessions,
         x="timestamp",
         y="angular_excursion",
         markers=True
@@ -140,7 +150,7 @@ else:
 st.divider()
 
 with st.expander("Session History"):
-    st.dataframe(sessions, use_container_width=True, hide_index=True)
+    st.dataframe(filtered_sessions, use_container_width=True, hide_index=True)
 
 st.markdown(
     f'<div class="footer">Data stored locally | Last updated: {datetime.now().strftime("%Y-%m-%d %H:%M")}</div>', 

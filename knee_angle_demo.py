@@ -7,7 +7,7 @@ from src.exercise_analyzer import SquatAnalyzer
 from src.session_store import save_session
 
 
-def draw_hud(frame, text, position):
+def draw_hud(frame, text, position, color=(255, 255, 0)):
     font = cv2.FONT_HERSHEY_SIMPLEX
     scale = 0.8
     thickness = 2
@@ -19,7 +19,7 @@ def draw_hud(frame, text, position):
     cv2.rectangle(overlay, (x - 10, y - text_h - 10), (x + text_w + 10, y + 10), (0, 0, 0), -1)
     cv2.addWeighted(overlay, 0.6, frame, 0.4, 0, frame)
     
-    cv2.putText(frame, text, (x, y), font, scale, (255, 255, 0), thickness, cv2.LINE_AA)
+    cv2.putText(frame, text, (x, y), font, scale, color, thickness, cv2.LINE_AA)
 
 
 def main():
@@ -78,7 +78,6 @@ def main():
         print(f"{key.upper()}: {value}")
     print("-----------------------")
 
-# Save only if at least 1 rep was performed
     if final_stats["reps"] > 0:
         session_record = {
             "exercise": "squat",

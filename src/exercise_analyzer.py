@@ -1,4 +1,4 @@
-"""Exercise state machine for repetition counting."""
+"""Exercise state machines for repetition counting."""
 
 
 class SquatAnalyzer:
@@ -19,12 +19,45 @@ class SquatAnalyzer:
         self.min_angle = min(self.min_angle, angle)
         self.max_angle = max(self.max_angle, angle)
 
-    # State Machine
         if angle < self.down_threshold and self.stage == "up":
             self.stage = "down"
             
         if angle > self.up_threshold and self.stage == "down":
             self.stage = "up"
+            self.reps += 1
+
+    def get_summary(self):
+        return {
+            "reps": self.reps,
+            "min_angle": round(self.min_angle, 1) if self.min_angle < 180 else 0,
+            "max_angle": round(self.max_angle, 1),
+            "rom": round(self.max_angle - self.min_angle, 1) if self.max_angle > 0 else 0
+        }
+
+
+class BicepAnalyzer:
+    def __init__(self, contracted_threshold=45, relaxed_threshold=160):
+        self.contracted_threshold = contracted_threshold
+        self.relaxed_threshold = relaxed_threshold
+        
+        self.stage = "relaxed"
+        self.reps = 0
+        
+        self.min_angle = 180.0
+        self.max_angle = 0.0
+
+    def update(self, angle):
+        if angle is None:
+            return
+
+        self.min_angle = min(self.min_angle, angle)
+        self.max_angle = max(self.max_angle, angle)
+
+        if angle < self.contracted_threshold and self.stage == "relaxed":
+            self.stage = "contracted"
+            
+        if angle > self.relaxed_threshold and self.stage == "contracted":
+            self.stage = "relaxed"
             self.reps += 1
 
     def get_summary(self):
