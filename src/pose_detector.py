@@ -21,14 +21,16 @@ class PoseDetector:
         self.timestamp_ms = 0
         
         self.pose_connections = [
-            (11, 12),                               # Shoulders
-            (11, 23), (12, 24),                     # Torso sides
-            (23, 24),                               # Hips
-            (23, 25), (25, 27), (27, 31),           # Left leg
-            (24, 26), (26, 28), (28, 32)            # Right leg
+            (11, 12),
+            (11, 23), (12, 24),
+            (23, 24),
+            (23, 25), (25, 27), (27, 31),
+            (24, 26), (26, 28), (28, 32),
+            (11, 13), (13, 15), 
+            (12, 14), (14, 16)
         ]
         
-        self.joints_to_draw = [11, 12, 23, 24, 25, 26, 27, 28, 31, 32]
+        self.joints_to_draw = [11, 12, 13, 14, 15, 16, 23, 24, 25, 26, 27, 28, 31, 32]
 
     def process(self, frame):
         rgb_frame = cv2.cvtColor(frame, cv2.COLOR_BGR2RGB)
@@ -44,12 +46,15 @@ class PoseDetector:
             landmarks = result.pose_landmarks[0]
             
             for connection in self.pose_connections:
-                self._draw_line(frame, landmarks, connection[0], connection[1], w, h)
+                if (landmarks[connection[0]].visibility > 0.6 and 
+                    landmarks[connection[1]].visibility > 0.6):
+                    self._draw_line(frame, landmarks, connection[0], connection[1], w, h)
             
             for idx in self.joints_to_draw:
-                lm = landmarks[idx]
-                cx, cy = int(lm.x * w), int(lm.y * h)
-                cv2.circle(frame, (cx, cy), 6, (0, 255, 0), -1)
+                if landmarks[idx].visibility > 0.6:
+                    lm = landmarks[idx]
+                    cx, cy = int(lm.x * w), int(lm.y * h)
+                    cv2.circle(frame, (cx, cy), 6, (0, 255, 0), -1)
                 
         return frame
 
